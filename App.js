@@ -4,6 +4,9 @@ import { StyleSheet, Text, View, Button, Image } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import FlatButton from '../barcodeScanner/shared/button';
 import axios from 'axios';
+import * as React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack'
 
 export default function App() {
 
@@ -19,6 +22,12 @@ export default function App() {
       setHasPermission(status == 'granted')
     })()
   }
+
+  //Request Camera Permission with no requirements (the [] at the end)
+  useEffect(() => {
+    askForCameraPermission();
+  }, []);
+  
 
   //Function called to hit the API with the barcode
   //and store data for use
@@ -36,10 +45,6 @@ export default function App() {
         });
   }
 
-  //Request Camera Permission with no requirements (the [] at the end)
-  useEffect(() => {
-    askForCameraPermission();
-  }, []);
 
   //function called when we scan the barcode
   const handleScannedBarCode = ({type,data}) => {
@@ -67,12 +72,11 @@ export default function App() {
       <View style={styles.container}>
         <Image style={styles.logo2} source={require('./assets/Barcode-Portal-logo2.png')} />
         <Text style={styles.noPermission}>No Access To Camera</Text>
-        <Button title={'Click to Scan Item'} titleStyle={{color: 'black'}} onPress={() => askForCameraPermission} color='#00FF85' />        
+        <FlatButton text='Click to Scan Barcode' onPress={() => askForCameraPermission} color='#00FF85' />        
         <StatusBar style="auto" />
       </View>
     );
   }
-
 
   //Display the main scanner view
   return (
