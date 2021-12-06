@@ -4,15 +4,16 @@ import { StyleSheet, Text, View, Button, Image } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import FlatButton from '../barcodeScanner/shared/button';
 import axios from 'axios';
-import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack'
+import { render } from 'react-dom';
 
 export default function App() {
 
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const [text, setText] = useState('Hover over a barcode to scan');
+  const [readyToScan,setReadyToScan] = useState(true);
   var barcodeData = null;
   var axiosData = null;
 
@@ -37,7 +38,10 @@ export default function App() {
         .then(response => {
             console.log('getting data from axios', response.data);
             setTimeout(() => {
-                axiosData = response.data
+                axiosData = response.data;
+                console.log('item: ', axiosData.products[0].brand);
+                var item = axiosData.products[0].brand;
+                displayResults(item);
             }, 2000)
         })
         .catch(error => {
@@ -78,20 +82,34 @@ export default function App() {
     );
   }
 
-  //Display the main scanner view
-  return (
-    <View style={styles.container}>
-        <Image style={styles.logo2} source={require('./assets/Barcode-Portal-logo2.png')} />
-      <View style={styles.barcodeBox}>
-        <BarCodeScanner
-          onBarCodeScanned={scanned ? undefined : handleScannedBarCode}
-          style={{height: 400, width: 400}} />
-      </View>
-      <Text style={styles.textView}>{text}</Text>
+  const displayResults = (props) => {
+      return(
+        <View style={styles.container}>
+          <Image style={styles.upperLogo} source={require('./assets/Barcode-Portal-logo2.png')} />
+          <View>
+            <Text>{props.item}</Text>
+          </View>
+          <FlatButton text='Scan Another Item' onPress={setReadyToScan(true)} color='#00FF85' />
+        </View>
+      );
+  }
 
-      {scanned && <FlatButton text='Click to Scan Again' onPress={() => setScanned(false)} color='#00FF85' />}
-    </View>
-  );
+  if(readyToScan == true){
+  //Display the main scanner view
+    return (
+      <View style={styles.container}>
+        <Image style={styles.logo2} source={require('./assets/Barcode-Portal-logo2.png')} />
+        <View style={styles.barcodeBox}>
+          <BarCodeScanner
+            onBarCodeScanned={scanned ? undefined : handleScannedBarCode}
+            style={{height: 400, width: 400}} />
+        </View>
+        <Text style={styles.textView}>{text}</Text>
+        {setReadyToScan(false)}
+        {scanned && <FlatButton text='Click to Scan Again' onPress={() => setScanned(false)} color='#00FF85' />}
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -130,6 +148,11 @@ const styles = StyleSheet.create({
     marginTop: 75,
     marginBottom: 25,
   },
+  uppderLogo: {
+    width: 75,
+    height: 75,
+    justifyContent: 'flex-start',
+  },
 
   titleText: {
     fontSize: 30,
@@ -138,4 +161,4 @@ const styles = StyleSheet.create({
     color: '#00FF85'
   }
 
-});
+})
