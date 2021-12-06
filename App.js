@@ -54,7 +54,7 @@ export default function App() {
   if (hasPermission == null) {
     return (
       <View style={styles.container}>
-        <Image style={styles.logo1} source={require('./assets/Barcode-Portal.png')} />
+        <Image style={styles.logo1} source={require('./assets/Barcode-Portal-logo2.png')} />
         <StatusBar style="auto" />
       </View>
     );
@@ -64,7 +64,7 @@ export default function App() {
   if( hasPermission == false) {
     return (
       <View style={styles.container}>
-        <Image style={styles.logo2} source={require('./assets/Barcode-Portal.png')} />
+        <Image style={styles.logo2} source={require('./assets/Barcode-Portal-logo2.png')} />
         <Text style={styles.noPermission}>No Access To Camera</Text>
         <Button title={'Click to Scan Item'} onPress={() => askForCameraPermission} color='00FF85' />        
         <StatusBar style="auto" />
@@ -72,10 +72,11 @@ export default function App() {
     );
   }
 
+
   //Display the main scanner view
   return (
     <View style={styles.container}>
-        <Image style={styles.logo2} source={require('./assets/Barcode-Portal.png')} />
+        <Image style={styles.logo2} source={require('./assets/Barcode-Portal-logo2.png')} />
       <View style={styles.barcodeBox}>
         <BarCodeScanner
           onBarCodeScanned={scanned ? undefined : handleScannedBarCode}
@@ -112,7 +113,7 @@ const styles = StyleSheet.create({
   textView: {
     fontSize: 18,
     margin: 20,
-    color: '#00FF85'
+    color: '#085700'
   },
   logo1: {
     width: 150,
