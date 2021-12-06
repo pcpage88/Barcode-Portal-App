@@ -66,6 +66,7 @@ export default function App() {
       <View style={styles.container}>
         <Image style={styles.logo2} source={require('./assets/Barcode-Portal.png')} />
         <Text style={styles.noPermission}>No Access To Camera</Text>
+        <Button title={'Click to Scan Item'} onPress={() => askForCameraPermission} color='00FF85' />        
         <StatusBar style="auto" />
       </View>
     );
@@ -82,7 +83,7 @@ export default function App() {
       </View>
       <Text style={styles.textView}>{text}</Text>
 
-      {scanned && <Button title={'Click to Scan Again'} onPress={() => setScanned(false)} color='tomato' />}
+      {scanned && <Button title={'Click to Scan Again'} onPress={() => setScanned(false)} color='00FF85' />}
     </View>
   );
 }
