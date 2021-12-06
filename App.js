@@ -55,15 +55,16 @@ export default function App() {
     return (
       <View style={styles.container}>
         <Image style={styles.logo1} source={require('./assets/Barcode-Portal.png')} />
-        <Text>Barcode Scanner App</Text>
         <StatusBar style="auto" />
       </View>
     );
   }
 
+  //If permission is denied, show this screen
   if( hasPermission == false) {
     return (
       <View style={styles.container}>
+        <Image style={styles.logo2} source={require('./assets/Barcode-Portal.png')} />
         <Text style={styles.noPermission}>No Access To Camera</Text>
         <StatusBar style="auto" />
       </View>
