@@ -2,6 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import React, {useState, useEffect} from 'react';
 import { StyleSheet, Text, View, Button, Image } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
+import FlatButton from '../barcodeScanner/shared/button';
 import axios from 'axios';
 
 export default function App() {
@@ -66,7 +67,7 @@ export default function App() {
       <View style={styles.container}>
         <Image style={styles.logo2} source={require('./assets/Barcode-Portal-logo2.png')} />
         <Text style={styles.noPermission}>No Access To Camera</Text>
-        <Button title={'Click to Scan Item'} onPress={() => askForCameraPermission} color='00FF85' />        
+        <Button title={'Click to Scan Item'} titleStyle={{color: 'black'}} onPress={() => askForCameraPermission} color='#00FF85' />        
         <StatusBar style="auto" />
       </View>
     );
@@ -84,7 +85,7 @@ export default function App() {
       </View>
       <Text style={styles.textView}>{text}</Text>
 
-      {scanned && <Button title={'Click to Scan Again'} onPress={() => setScanned(false)} color='00FF85' />}
+      {scanned && <FlatButton text='Click to Scan Again' onPress={() => setScanned(false)} color='#00FF85' />}
     </View>
   );
 }
