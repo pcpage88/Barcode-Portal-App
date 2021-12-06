@@ -2,18 +2,37 @@ import { StatusBar } from 'expo-status-bar';
 import React, {useState, useEffect} from 'react';
 import { StyleSheet, Text, View, Button, Image } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
+import axios from 'axios';
 
 export default function App() {
 
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const [text, setText] = useState('Hover over a barcode to scan');
+  var barcodeData = null;
+  var axiosData = null;
 
   const askForCameraPermission = () => {
     (async () => {
       const { status } = await BarCodeScanner.requestPermissionsAsync();
       setHasPermission(status == 'granted')
     })()
+  }
+
+  //Function called to hit the API with the barcode
+  //and store data for use
+  goForAxios = (barcodeData) => {
+    console.log(barcodeData)
+    axios.get("https://python-mobile-scraper.herokuapp.com/api/v1/barcode?barcode=" + barcodeData)
+        .then(response => {
+            console.log('getting data from axios', response.data);
+            setTimeout(() => {
+                axiosData = response.data
+            }, 2000)
+        })
+        .catch(error => {
+            console.log(error);
+        });
   }
 
   //Request Camera Permission with no requirements (the [] at the end)
@@ -26,6 +45,9 @@ export default function App() {
     setScanned(true);
     setText(data);
     console.log('Type: ' + type + '\nData: ' + data)
+    barcodeData = data;
+    console.log('Barcode data is: ' + barcodeData)
+    goForAxios(barcodeData);
   }
 
   // Function that checks permissions and return the screens
@@ -63,8 +85,6 @@ export default function App() {
     </View>
   );
 }
-
-
 
 const styles = StyleSheet.create({
   container: {
