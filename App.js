@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, Text, View, Button, Image } from 'react-native';
+import { StyleSheet, Text, View, Button, Image,Linking } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import FlatButton from '../barcodeScanner/shared/button';
 import axios from 'axios';
@@ -8,19 +8,26 @@ import { NavigationContainer } from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack'
 import { render } from 'react-dom';
 
+window.qrLink = null;
+
 export default function App() {
 
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const [text, setText] = useState('Hover over a barcode to scan');
-  const [readyToScan,setReadyToScan] = useState(true);
+  const [retrieved,setRetrieved] = useState(false);
+  const [qrScanned, isQRScanned] = useState(false)
   var barcodeData = null;
   var axiosData = null;
+  var brand = null;
+  var name = null;
+  var image = null;
+  var qrLink = null;
 
   const askForCameraPermission = () => {
     (async () => {
       const { status } = await BarCodeScanner.requestPermissionsAsync();
-      setHasPermission(status == 'granted')
+      setHasPermission(status == 'granted');
     })()
   }
 
@@ -39,9 +46,11 @@ export default function App() {
             console.log('getting data from axios', response.data);
             setTimeout(() => {
                 axiosData = response.data;
-                console.log('item: ', axiosData.products[0].brand);
-                var item = axiosData.products[0].brand;
-                displayResults(item);
+                brand = axiosData.products[0].brand;
+                name = axiosData.products[0].title;
+                image = axiosData.products[0].images[0];
+                console.log('Brand: ', brand, '\nItem Name: ', name, '\nImage URL: ', image);
+                setRetrieved(true);
             }, 2000)
         })
         .catch(error => {
@@ -57,7 +66,16 @@ export default function App() {
     console.log('Type: ' + type + '\nData: ' + data)
     barcodeData = data;
     console.log('Barcode data is: ' + barcodeData)
-    goForAxios(barcodeData);
+    if (type == BarCodeScanner.Constants.BarCodeType.qr) {
+      isQRScanned(true);
+      console.log("qrScanned set to " + qrScanned)
+      App.qrLink = data;
+      console.log(App.qrLink);
+    }
+    if (type != BarCodeScanner.Constants.BarCodeType.qr) {
+      isQRScanned(false);
+      goForAxios(barcodeData);
+    }  
   }
 
   // Function that checks permissions and return the screens
@@ -82,19 +100,19 @@ export default function App() {
     );
   }
 
-  const displayResults = (props) => {
-      return(
-        <View style={styles.container}>
-          <Image style={styles.upperLogo} source={require('./assets/Barcode-Portal-logo2.png')} />
-          <View>
-            <Text>{props.item}</Text>
-          </View>
-          <FlatButton text='Scan Another Item' onPress={setReadyToScan(true)} color='#00FF85' />
+  if(scanned && retrieved){
+    return(
+      <View style={styles.resultsContainer}>
+        <Image style={styles.upperLogo} source={require('./assets/Barcode-Portal-logo2.png')} />
+        <Image style={{width: 100, height: 100}} source={{uri:'${image}'}} />
+        <View style={styles.resultList}>
+          <Text style={{color: 'black'}}>{brand}</Text>
+          <Text style={{color: 'black'}}>{name}</Text>
         </View>
-      );
+      </View>
+    );
   }
 
-  if(readyToScan == true){
   //Display the main scanner view
     return (
       <View style={styles.container}>
@@ -105,12 +123,12 @@ export default function App() {
             style={{height: 400, width: 400}} />
         </View>
         <Text style={styles.textView}>{text}</Text>
-        {setReadyToScan(false)}
         {scanned && <FlatButton text='Click to Scan Again' onPress={() => setScanned(false)} color='#00FF85' />}
+        {qrScanned && <FlatButton style={{paddingTop: 20}} text='Go to link' onPress={() => Linking.openURL(App.qrLink)} color='#00FF85' />}
       </View>
     );
   }
-}
+
 
 const styles = StyleSheet.create({
   container: {
@@ -119,6 +137,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingBottom: 100,
+  },
+  resultsContainer: {
+    flex: 1,
+    backgroundColor: '#0098FF',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+  },
+  resultList: {
+    flex: 1,
+    backgroundColor: '#0098FA',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
   },
   barcodeBox: {
     alignItems: 'center',
@@ -148,10 +178,12 @@ const styles = StyleSheet.create({
     marginTop: 75,
     marginBottom: 25,
   },
-  uppderLogo: {
-    width: 75,
-    height: 75,
+  upperLogo: {
+    width: 100,
+    height: 100,
     justifyContent: 'flex-start',
+    marginTop: 15,
+    marginLeft: 15,
   },
 
   titleText: {
