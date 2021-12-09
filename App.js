@@ -85,20 +85,6 @@ export default function App() {
     }  
   }
 
-  // const displayResults = () => {
-  //   setRetrieved(true);
-  //   return(
-  //     <View style={styles.resultsContainer}>
-  //       <Image style={styles.upperLogo} source={require('./assets/Barcode-Portal-logo2.png')} />
-  //       <Image style={{width: 100, height: 100}} source={{uri:{image}}} />
-  //       <View style={styles.resultList}>
-  //         <Text style={{color: 'black'}}>{brand}</Text>
-  //         <Text style={{color: 'black'}}>{name}</Text>
-  //       </View>
-  //     </View>
-  //   );
-  // }
-
   // Function that checks permissions and return the screens
   if (hasPermission == null) {
     return (
