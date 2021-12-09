@@ -115,8 +115,10 @@ export default function App() {
       <View style={styles.resultsContainer}>
         <View style={styles.resultsHeader}>
           <Image style={styles.resultImage} source={{uri:image}} />
-          <FlatButton text='Scan Another Item' onPress={() => setRetrieved(false)} color='#00FF85' />
-          <Image style={styles.resultsLogo} source={require('./assets/Barcode-Portal-logo2.png')} />
+          <View style={styles.resultsContainer}>
+            <Image style={styles.resultsLogo} source={require('./assets/Barcode-Portal-logo2.png')} />
+            <FlatButton text='Scan Another Item' onPress={() => setRetrieved(false)} color='#00FF85' />
+          </View>
         </View>
         <View style={styles.resultList}>
           <Text style={styles.textView}>Brand: {brand}</Text>
@@ -175,14 +177,16 @@ const styles = StyleSheet.create({
     height: 150,
     marginLeft: 20,
     marginRight: 20,
-    marginTop: 20,
+    marginTop: 25,
+    marginBottom: 20,
   },
   resultsLogo: {
-    width: 75,
-    height: 75,
+    width: 100,
+    height: 100,
     justifyContent: 'flex-end',
-    marginTop: 15,
-    marginLeft: 25,
+    marginTop: 10,
+    marginLeft: 45,
+    marginBottom: 6,
   },
   resultList: {
     flex: 1,
