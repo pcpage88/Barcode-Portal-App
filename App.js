@@ -2,12 +2,8 @@ import { StatusBar } from 'expo-status-bar';
 import React, {useState, useEffect} from 'react';
 import { StyleSheet, Text, View, Button, Image,Linking } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
-import FlatButton from '../barcodeScanner/shared/button';
+import FlatButton from './shared/button';
 import axios from 'axios';
-import { NavigationContainer } from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack'
-import { render } from 'react-dom';
-import { ScreenStackHeaderRightView } from 'react-native-screens';
 
 window.qrLink = null;
 window.bcLink = null;
